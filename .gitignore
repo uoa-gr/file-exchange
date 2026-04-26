@@ -1,0 +1,21 @@
+node_modules/
+dist/
+build/
+release/
+out/
+.cache/
+.parcel-cache/
+.vite/
+*.log
+.DS_Store
+Thumbs.db
+.env
+.env.local
+*.tsbuildinfo
+coverage/
+.turbo/
+.pnpm-store/
+# Electron build outputs
+apps/desktop/dist/
+apps/renderer/dist/
+release-builds/
