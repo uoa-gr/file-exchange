@@ -18,7 +18,8 @@
     "@liaskos/crypto": "workspace:*",
     "@liaskos/transfer": "workspace:*",
     "@liaskos/keystore": "workspace:*",
-    "@liaskos/shared": "workspace:*"
+    "@liaskos/shared": "workspace:*",
+    "@liaskos/supabase-client": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.3.12",

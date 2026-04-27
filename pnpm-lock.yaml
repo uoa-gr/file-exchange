@@ -32,6 +32,9 @@ importers:
       '@liaskos/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      '@liaskos/supabase-client':
+        specifier: workspace:*
+        version: link:../../packages/supabase-client
       '@liaskos/transfer':
         specifier: workspace:*
         version: link:../../packages/transfer
@@ -104,6 +107,12 @@ importers:
         specifier: workspace:*
         version: link:../crypto
     devDependencies:
+      fake-indexeddb:
+        specifier: ^6.0.0
+        version: 6.2.5
+      idb:
+        specifier: ^8.0.3
+        version: 8.0.3
       typescript:
         specifier: ^5.6.3
         version: 5.9.3
@@ -835,6 +844,10 @@ packages:
   expect-type@1.3.0:
     resolution: {integrity: sha512-knvyeauYhqjOYvQ66MznSMs83wmHrCycNEN6Ao+2AeYEfxUIkuiVxdEa1qlGEPK+We3n0THiDciYSsCcgW/DoA==}
     engines: {node: '>=12.0.0'}
+
+  fake-indexeddb@6.2.5:
+    resolution: {integrity: sha512-CGnyrvbhPlWYMngksqrSSUT1BAVP49dZocrHuK0SvtR0D5TMs5wP0o3j7jexDJW01KSadjBp1M/71o/KR3nD1w==}
+    engines: {node: '>=18'}
 
   fast-string-truncated-width@3.0.3:
     resolution: {integrity: sha512-0jjjIEL6+0jag3l2XWWizO64/aZVtpiGE3t0Zgqxv0DPuxiMjvB3M24fCyhZUO4KomJQPj3LTSUnDP3GpdwC0g==}
@@ -1883,6 +1896,8 @@ snapshots:
       '@types/estree': 1.0.8
 
   expect-type@1.3.0: {}
+
+  fake-indexeddb@6.2.5: {}
 
   fast-string-truncated-width@3.0.3: {}
 
