@@ -1,0 +1,7 @@
+supabase/
+docs/
+.github/
+README.md
+*.md
+.editorconfig
+.nvmrc
