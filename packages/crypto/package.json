@@ -8,12 +8,12 @@
   "exports": {
     ".": {
       "browser": "./src/index.ts",
-      "node":    "./src/index.ts",
+      "node": "./src/index.ts",
       "default": "./src/index.ts"
     },
     "./sodium": {
       "browser": "./src/sodium.browser.ts",
-      "node":    "./src/sodium.node.ts",
+      "node": "./src/sodium.node.ts",
       "default": "./src/sodium.node.ts"
     }
   },
@@ -27,7 +27,9 @@
   },
   "devDependencies": {
     "@types/libsodium-wrappers": "^0.7.14",
+    "@types/libsodium-wrappers-sumo": "^0.7.8",
     "@vitest/browser": "^2.1.4",
+    "libsodium-wrappers-sumo": "^0.7.15",
     "playwright": "^1.48.0",
     "typescript": "^5.6.3",
     "vitest": "^2.1.4"

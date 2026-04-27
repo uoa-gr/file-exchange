@@ -1,12 +1,12 @@
 import { createRequire } from 'node:module';
-import type sodiumNs from 'libsodium-wrappers';
+import type sodiumNs from 'libsodium-wrappers-sumo';
 
 // libsodium-wrappers v0.7.16 ships a broken ESM build whose .mjs file
 // imports a missing './libsodium.mjs'. Bypass it by going through the
 // CJS bundle via createRequire — works in Node, Vitest, and esbuild
 // (which prefers the CJS condition for native bundling targets).
 const require = createRequire(import.meta.url);
-const sodium = require('libsodium-wrappers') as typeof sodiumNs;
+const sodium = require('libsodium-wrappers-sumo') as typeof sodiumNs;
 
 let instance: typeof sodium | null = null;
 let pending: Promise<typeof sodium> | null = null;

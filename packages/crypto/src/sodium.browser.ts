@@ -1,4 +1,4 @@
-import sodium from 'libsodium-wrappers';
+import sodium from 'libsodium-wrappers-sumo';
 
 let instance: typeof sodium | null = null;
 let pending: Promise<typeof sodium> | null = null;
