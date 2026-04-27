@@ -1,18 +1,18 @@
 {
-  "name": "spourgiti",
+  "name": "file-exchange",
   "version": "0.1.0",
   "private": true,
-  "productName": "Spourgiti",
+  "productName": "File Exchange",
   "description": "End-to-end encrypted file sharing — web edition",
-  "author": { "name": "Spourgiti", "email": "noreply@example.com" },
+  "author": { "name": "Liaskos", "email": "noreply@example.com" },
   "packageManager": "pnpm@9.12.0",
   "engines": { "node": "20.x" },
   "scripts": {
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
-    "test:browser": "pnpm --filter @spourgiti/crypto test:browser",
-    "build": "pnpm --filter @spourgiti/send build",
-    "dev": "pnpm --filter @spourgiti/send dev"
+    "test:browser": "pnpm --filter @liaskos/crypto test:browser",
+    "build": "pnpm --filter @liaskos/file-exchange build",
+    "dev": "pnpm --filter @liaskos/file-exchange dev"
   },
   "devDependencies": {
     "@types/node": "^20.14.0",

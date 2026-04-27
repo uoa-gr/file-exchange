@@ -1,11 +1,11 @@
-import type { SpourgitiClient } from './client.js';
+import type { FileExchangeClient } from './client.js';
 
 /**
  * Subscribe to inbox row inserts for the current user. Returns an
  * unsubscribe function the caller MUST invoke on cleanup.
  */
 export function subscribeToInbox(
-  client: SpourgitiClient,
+  client: FileExchangeClient,
   userId: string,
   onInsert: (row: unknown) => void,
 ): () => void {
@@ -29,7 +29,7 @@ export function subscribeToInbox(
  * signed manifest (spec section 4.4 step 9).
  */
 export function signalingChannel(
-  client: SpourgitiClient,
+  client: FileExchangeClient,
   sendId: string,
   onSignal: (msg: unknown) => void,
 ): { send: (msg: unknown) => Promise<void>; close: () => void } {

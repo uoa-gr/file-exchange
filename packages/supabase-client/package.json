@@ -1,5 +1,5 @@
 {
-  "name": "@spourgiti/supabase-client",
+  "name": "@liaskos/supabase-client",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.46.1",
-    "@spourgiti/shared": "workspace:*"
+    "@liaskos/shared": "workspace:*"
   },
   "devDependencies": {
     "dotenv": "^16.4.5",

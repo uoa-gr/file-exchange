@@ -1,7 +1,7 @@
 import { openDB, type IDBPDatabase, type DBSchema } from 'idb';
-import type { EncryptedPrivateKey } from '@spourgiti/keystore';
+import type { EncryptedPrivateKey } from '@liaskos/keystore';
 
-export const DB_NAME = 'spourgiti-send';
+export const DB_NAME = 'file-exchange';
 export const DB_VERSION = 1;
 
 export interface SendDB extends DBSchema {

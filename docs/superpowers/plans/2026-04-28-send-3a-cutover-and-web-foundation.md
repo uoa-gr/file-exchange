@@ -2,15 +2,15 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Leave the repo on a green main branch where the Electron-era code is archived in a git tag and removed, the new `apps/send` web SPA boots and renders a stub page, the `@spourgiti/crypto` package works in both Node and browser via a dual-export map, the `@spourgiti/transfer` package is scaffolded with the crypto-pipeline types, the `@spourgiti/shared` package is rewritten to web-only domain types, the `@spourgiti/keystore` package has a fresh browser-targeted interface, an IndexedDB schema file with versioning is in place, the `cryptoState` zustand store skeleton compiles, and CI runs typecheck + Node tests + Vitest browser-mode tests green.
+**Goal:** Leave the repo on a green main branch where the Electron-era code is archived in a git tag and removed, the new `apps/send` web SPA boots and renders a stub page, the `@liaskos/crypto` package works in both Node and browser via a dual-export map, the `@liaskos/transfer` package is scaffolded with the crypto-pipeline types, the `@liaskos/shared` package is rewritten to web-only domain types, the `@liaskos/keystore` package has a fresh browser-targeted interface, an IndexedDB schema file with versioning is in place, the `cryptoState` zustand store skeleton compiles, and CI runs typecheck + Node tests + Vitest browser-mode tests green.
 
 **No backend work in this plan.** Supabase project, migrations, RLS, RPCs, supabase-client wrapper → Plan 3b. Auth flows → 3c. Cloud send/receive → 3d. P2P → 3e. Polish/deploy/E2E → 3f.
 
-**Architecture:** A clean cutover commit drops every Electron-era file in one shot (after a `desktop-archive` tag preserves history). The crypto package gains a `package.json` `exports` map so the browser uses native ESM `import sodium from 'libsodium-wrappers'` and Node uses the existing `createRequire` shim. The new `@spourgiti/transfer` package owns pure-function compose/verify pipeline types; `apps/send` orchestrates transports. The new `@spourgiti/keystore` exposes a browser-only `BrowserKeystore` interface (Argon2id implementation lands in Plan 3c). `@spourgiti/shared` becomes domain types + RPC shapes. The web SPA is a Vite + React + TS app that compiles, boots, and renders a placeholder page.
+**Architecture:** A clean cutover commit drops every Electron-era file in one shot (after a `desktop-archive` tag preserves history). The crypto package gains a `package.json` `exports` map so the browser uses native ESM `import sodium from 'libsodium-wrappers'` and Node uses the existing `createRequire` shim. The new `@liaskos/transfer` package owns pure-function compose/verify pipeline types; `apps/send` orchestrates transports. The new `@liaskos/keystore` exposes a browser-only `BrowserKeystore` interface (Argon2id implementation lands in Plan 3c). `@liaskos/shared` becomes domain types + RPC shapes. The web SPA is a Vite + React + TS app that compiles, boots, and renders a placeholder page.
 
 **Tech Stack:** TypeScript 5.6, Vite 5, React 18, Vitest 2.1 (with `@vitest/browser` + Playwright provider), `idb` 8, libsodium-wrappers 0.7, zustand 5, react-router-dom 6.
 
-**Plan parent:** [docs/superpowers/specs/2026-04-27-spourgiti-send-design.md](../specs/2026-04-27-spourgiti-send-design.md)
+**Plan parent:** [docs/superpowers/specs/2026-04-27-file-exchange-design.md](../specs/2026-04-27-file-exchange-design.md)
 **Predecessor plan:** [Plan 2 — crypto + keystore + vault libraries](2026-04-27-crypto-keystore-vault.md)
 
 ---
@@ -18,7 +18,7 @@
 ## File structure (end-state of Plan 3a)
 
 ```
-spourgiti/
+file-exchange/
   apps/
     send/                                 NEW (formerly apps/renderer's slot)
       package.json, tsconfig.json, vite.config.ts, index.html, public/
@@ -128,20 +128,20 @@ Expected: completes without error. Some packages have no deps yet; that's fine.
 
 ```json
 {
-  "name": "spourgiti",
+  "name": "file-exchange",
   "version": "0.1.0",
   "private": true,
-  "productName": "Spourgiti",
+  "productName": "File Exchange",
   "description": "End-to-end encrypted file sharing — web edition",
-  "author": { "name": "Spourgiti", "email": "noreply@example.com" },
+  "author": { "name": "File Exchange", "email": "noreply@example.com" },
   "packageManager": "pnpm@9.12.0",
   "engines": { "node": "20.x" },
   "scripts": {
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
-    "test:browser": "pnpm --filter @spourgiti/crypto test:browser",
-    "build": "pnpm --filter @spourgiti/send build",
-    "dev": "pnpm --filter @spourgiti/send dev"
+    "test:browser": "pnpm --filter @liaskos/crypto test:browser",
+    "build": "pnpm --filter @liaskos/send build",
+    "dev": "pnpm --filter @liaskos/send dev"
   },
   "devDependencies": {
     "@types/node": "^20.14.0",
@@ -182,7 +182,7 @@ git mv apps/renderer apps/send
 
 ```json
 {
-  "name": "@spourgiti/send",
+  "name": "@liaskos/send",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -198,10 +198,10 @@ git mv apps/renderer apps/send
     "react-router-dom": "^6.27.0",
     "zustand": "^5.0.1",
     "idb": "^8.0.0",
-    "@spourgiti/crypto": "workspace:*",
-    "@spourgiti/transfer": "workspace:*",
-    "@spourgiti/keystore": "workspace:*",
-    "@spourgiti/shared": "workspace:*"
+    "@liaskos/crypto": "workspace:*",
+    "@liaskos/transfer": "workspace:*",
+    "@liaskos/keystore": "workspace:*",
+    "@liaskos/shared": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.3.12",
@@ -214,7 +214,7 @@ git mv apps/renderer apps/send
 }
 ```
 
-Removed any `@spourgiti/updater-config` dep. Added `react-router-dom`, `zustand`, `idb`.
+Removed any `@liaskos/updater-config` dep. Added `react-router-dom`, `zustand`, `idb`.
 
 - [ ] **Step 3: Reinstall and commit**
 
@@ -273,7 +273,7 @@ export async function getSodium(): Promise<typeof sodium> {
 ```ts
 // Re-exports getSodium through the package's own exports map.
 // The runtime (Node vs browser) picks which sodium file is loaded.
-export { getSodium } from '@spourgiti/crypto/sodium';
+export { getSodium } from '@liaskos/crypto/sodium';
 ```
 
 - [ ] **Step 4: Update primitive imports**
@@ -307,7 +307,7 @@ export * from './stream.js';
 
 ```json
 {
-  "name": "@spourgiti/crypto",
+  "name": "@liaskos/crypto",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -365,10 +365,10 @@ export default defineConfig({
 
 ```
 pnpm install
-pnpm --filter @spourgiti/crypto exec playwright install chromium
-pnpm --filter @spourgiti/crypto typecheck
-pnpm --filter @spourgiti/crypto test
-pnpm --filter @spourgiti/crypto test:browser
+pnpm --filter @liaskos/crypto exec playwright install chromium
+pnpm --filter @liaskos/crypto typecheck
+pnpm --filter @liaskos/crypto test
+pnpm --filter @liaskos/crypto test:browser
 ```
 
 Expected: typecheck clean; Node tests 18/18 pass; browser tests 18/18 pass in headless Chromium.
@@ -388,7 +388,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 
 ---
 
-## Task 6 — Replace `@spourgiti/keystore` with the browser interface
+## Task 6 — Replace `@liaskos/keystore` with the browser interface
 
 **Files:**
 - Delete: `packages/keystore/src/memory.ts`, `packages/keystore/src/safeStorage.ts`, their tests
@@ -408,7 +408,7 @@ rm packages/keystore/test/safeStorage.test.ts
 
 ```json
 {
-  "name": "@spourgiti/keystore",
+  "name": "@liaskos/keystore",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -419,7 +419,7 @@ rm packages/keystore/test/safeStorage.test.ts
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@spourgiti/crypto": "workspace:*"
+    "@liaskos/crypto": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.6.3",
@@ -509,8 +509,8 @@ describe('keystore types', () => {
 - [ ] **Step 6: Verify and commit**
 
 ```
-pnpm --filter @spourgiti/keystore typecheck
-pnpm --filter @spourgiti/keystore test
+pnpm --filter @liaskos/keystore typecheck
+pnpm --filter @liaskos/keystore test
 git add packages/keystore pnpm-lock.yaml
 git commit -m "feat(keystore): replace Electron impl with BrowserKeystore interface
 
@@ -519,7 +519,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 
 ---
 
-## Task 7 — Replace `@spourgiti/shared` with web domain types
+## Task 7 — Replace `@liaskos/shared` with web domain types
 
 **Files:**
 - Delete: `packages/shared/src/ipc-contract.ts`
@@ -638,8 +638,8 @@ export * from './version.js';
 - [ ] **Step 5: Verify and commit**
 
 ```
-pnpm --filter @spourgiti/shared typecheck
-pnpm --filter @spourgiti/shared test
+pnpm --filter @liaskos/shared typecheck
+pnpm --filter @liaskos/shared test
 git add packages/shared
 git commit -m "feat(shared): replace IPC contract with web domain + RPC types
 
@@ -648,7 +648,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 
 ---
 
-## Task 8 — Scaffold `@spourgiti/transfer` (types only)
+## Task 8 — Scaffold `@liaskos/transfer` (types only)
 
 **Files:**
 - Modify: `packages/transfer/package.json`
@@ -660,7 +660,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 
 ```json
 {
-  "name": "@spourgiti/transfer",
+  "name": "@liaskos/transfer",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -671,8 +671,8 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@spourgiti/crypto": "workspace:*",
-    "@spourgiti/shared": "workspace:*"
+    "@liaskos/crypto": "workspace:*",
+    "@liaskos/shared": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.6.3",
@@ -684,7 +684,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 - [ ] **Step 2: Create `packages/transfer/src/types.ts`**
 
 ```ts
-import type { FileEntry, Manifest } from '@spourgiti/shared';
+import type { FileEntry, Manifest } from '@liaskos/shared';
 
 export interface Envelope {
   encrypted_manifest: Uint8Array;
@@ -749,8 +749,8 @@ describe('transfer types', () => {
 
 ```
 pnpm install
-pnpm --filter @spourgiti/transfer typecheck
-pnpm --filter @spourgiti/transfer test
+pnpm --filter @liaskos/transfer typecheck
+pnpm --filter @liaskos/transfer test
 git add packages/transfer pnpm-lock.yaml
 git commit -m "feat(transfer): scaffold envelope + verify-result types
 
@@ -785,7 +785,7 @@ rm apps/send/src/ipc.ts
     <meta name="theme-color" content="#f6f1e7" />
     <meta http-equiv="Content-Security-Policy"
           content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src 'self' data: https://fonts.gstatic.com; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com;" />
-    <title>Spourgiti Send</title>
+    <title>File Exchange</title>
   </head>
   <body>
     <div id="root"></div>
@@ -845,12 +845,12 @@ createRoot(container).render(<App />);
 - [ ] **Step 7: Replace `apps/send/src/App.tsx`**
 
 ```tsx
-import { APP_VERSION } from '@spourgiti/shared';
+import { APP_VERSION } from '@liaskos/shared';
 
 export function App() {
   return (
     <main style={{ fontFamily: '"EB Garamond", Garamond, "Times New Roman", serif', padding: '4rem 2rem', maxWidth: 720, margin: '0 auto', backgroundColor: '#f6f1e7', color: '#1a1a1a', minHeight: '100vh' }}>
-      <h1 style={{ fontFamily: '"Cormorant Garamond", Garamond, serif', fontWeight: 600 }}>Spourgiti Send</h1>
+      <h1 style={{ fontFamily: '"Cormorant Garamond", Garamond, serif', fontWeight: 600 }}>File Exchange</h1>
       <p>End-to-end encrypted file sharing. Web edition v{APP_VERSION}.</p>
       <p style={{ color: '#5a5a5a' }}>
         The real UI lands in Plans 3c–3f. This page exists to prove the build chain works end-to-end.
@@ -863,12 +863,12 @@ export function App() {
 - [ ] **Step 8: Build + dev-launch sanity check**
 
 ```
-pnpm --filter @spourgiti/send typecheck
-pnpm --filter @spourgiti/send build
-pnpm --filter @spourgiti/send dev
+pnpm --filter @liaskos/send typecheck
+pnpm --filter @liaskos/send build
+pnpm --filter @liaskos/send dev
 ```
 
-Expected: typecheck clean; build outputs `apps/send/dist/index.html` + assets; `dev` serves on `http://localhost:5173`. Visit in a browser; should see "Spourgiti Send", version v0.1.0, body copy. Stop the dev server before continuing.
+Expected: typecheck clean; build outputs `apps/send/dist/index.html` + assets; `dev` serves on `http://localhost:5173`. Visit in a browser; should see "File Exchange", version v0.1.0, body copy. Stop the dev server before continuing.
 
 - [ ] **Step 9: Commit**
 
@@ -891,9 +891,9 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 
 ```ts
 import { openDB, type IDBPDatabase, type DBSchema } from 'idb';
-import type { EncryptedPrivateKey } from '@spourgiti/keystore';
+import type { EncryptedPrivateKey } from '@liaskos/keystore';
 
-export const DB_NAME = 'spourgiti-send';
+export const DB_NAME = 'file-exchange';
 export const DB_VERSION = 1;
 
 export interface SendDB extends DBSchema {
@@ -996,8 +996,8 @@ export const useCryptoStore = create<CryptoStore>((set) => ({
 - [ ] **Step 3: Verify the SPA still typechecks and builds**
 
 ```
-pnpm --filter @spourgiti/send typecheck
-pnpm --filter @spourgiti/send build
+pnpm --filter @liaskos/send typecheck
+pnpm --filter @liaskos/send build
 ```
 
 - [ ] **Step 4: Commit**
@@ -1054,7 +1054,7 @@ jobs:
           node-version: 20.18.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @spourgiti/crypto exec playwright install --with-deps chromium
+      - run: pnpm --filter @liaskos/crypto exec playwright install --with-deps chromium
       - run: pnpm test:browser
 ```
 

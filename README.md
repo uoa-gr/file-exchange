@@ -1,4 +1,4 @@
-# SPOURGITI
+# FILE EXCHANGE
 
 Local-first collaborative file-sync desktop app. See [docs/superpowers/specs/](docs/superpowers/specs/) for the design.
 

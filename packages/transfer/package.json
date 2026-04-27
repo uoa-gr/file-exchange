@@ -1,5 +1,5 @@
 {
-  "name": "@spourgiti/transfer",
+  "name": "@liaskos/transfer",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -10,8 +10,8 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@spourgiti/crypto": "workspace:*",
-    "@spourgiti/shared": "workspace:*"
+    "@liaskos/crypto": "workspace:*",
+    "@liaskos/shared": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.6.3",

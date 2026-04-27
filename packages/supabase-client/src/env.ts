@@ -1,4 +1,4 @@
-// Publishable key + project URL for the spourgiti-send Supabase project.
+// Publishable key + project URL for the file-exchange Supabase project.
 // The publishable key is gated by RLS; safe to commit.
 
 export const SUPABASE_URL = 'https://yycijtldadobazdjgfvj.supabase.co';

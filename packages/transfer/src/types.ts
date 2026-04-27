@@ -1,4 +1,4 @@
-import type { FileEntry, Manifest } from '@spourgiti/shared';
+import type { FileEntry, Manifest } from '@liaskos/shared';
 
 export interface Envelope {
   encrypted_manifest: Uint8Array;

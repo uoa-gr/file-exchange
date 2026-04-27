@@ -1,8 +1,8 @@
-import type { SpourgitiClient } from './client.js';
+import type { FileExchangeClient } from './client.js';
 
 export interface ReserveQuotaResult { ok: boolean; free: number; token: string | null }
 
-export async function reserveQuota(client: SpourgitiClient, sizeBytes: number): Promise<ReserveQuotaResult> {
+export async function reserveQuota(client: FileExchangeClient, sizeBytes: number): Promise<ReserveQuotaResult> {
   const { data, error } = await client.rpc('reserve_quota', { p_size: sizeBytes });
   if (error) throw error;
   const row = (data as ReserveQuotaResult[] | null)?.[0];
@@ -21,7 +21,7 @@ export interface CommitUploadParams {
   wrapped_key: string;
 }
 
-export async function commitUpload(client: SpourgitiClient, p: CommitUploadParams) {
+export async function commitUpload(client: FileExchangeClient, p: CommitUploadParams) {
   const { data, error } = await client.rpc('commit_upload', {
     p_token: p.token,
     p_recipient_id: p.recipient_id,
@@ -36,17 +36,17 @@ export async function commitUpload(client: SpourgitiClient, p: CommitUploadParam
   return data;
 }
 
-export async function markDelivered(client: SpourgitiClient, sendId: string): Promise<void> {
+export async function markDelivered(client: FileExchangeClient, sendId: string): Promise<void> {
   const { error } = await client.rpc('mark_delivered', { p_send_id: sendId });
   if (error) throw error;
 }
 
-export async function revokeSend(client: SpourgitiClient, sendId: string): Promise<void> {
+export async function revokeSend(client: FileExchangeClient, sendId: string): Promise<void> {
   const { error } = await client.rpc('revoke_send', { p_send_id: sendId });
   if (error) throw error;
 }
 
-export async function usernameAvailable(client: SpourgitiClient, username: string): Promise<boolean> {
+export async function usernameAvailable(client: FileExchangeClient, username: string): Promise<boolean> {
   const { data, error } = await client.rpc('username_available', { p_username: username });
   if (error) throw error;
   return Boolean(data);
@@ -59,7 +59,7 @@ export interface CreateProfileParams {
   recovery_kdf_params: { salt: number[]; ops_limit: number; mem_limit: number };
 }
 
-export async function createProfile(client: SpourgitiClient, p: CreateProfileParams) {
+export async function createProfile(client: FileExchangeClient, p: CreateProfileParams) {
   const { data, error } = await client.rpc('create_profile', {
     p_username: p.username,
     p_ed25519_public_key: p.ed25519_public_key,

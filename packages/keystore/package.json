@@ -1,5 +1,5 @@
 {
-  "name": "@spourgiti/keystore",
+  "name": "@liaskos/keystore",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -10,7 +10,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@spourgiti/crypto": "workspace:*"
+    "@liaskos/crypto": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.6.3",

@@ -1,8 +1,8 @@
-# Spourgiti Send — Design Specification
+# File Exchange — Design Specification
 
 **Date:** 2026-04-27 (rev. 2026-04-28 after multi-reviewer pass)
 **Status:** Approved for Plan 3
-**Supersedes for the file-sharing scope:** [2026-04-27-spourgiti-design.md](2026-04-27-spourgiti-design.md). The original desktop spec covered three features (project file sharing, messaging, secure exchange) inside one Electron app. After Plan 1's release-pipeline pain and the realisation that the three features have very different shapes, the project pivots to **three standalone web apps**, of which *Spourgiti Send* is the first.
+**Supersedes for the file-sharing scope:** [2026-04-27-file-exchange-design.md](2026-04-27-file-exchange-design.md). The original desktop spec covered three features (project file sharing, messaging, secure exchange) inside one Electron app. After Plan 1's release-pipeline pain and the realisation that the three features have very different shapes, the project pivots to **three standalone web apps**, of which *File Exchange* is the first.
 
 ---
 
@@ -55,7 +55,7 @@ The product is **not** a folder-sync tool. The folder-sync workflow lives in the
 
 ## 4. Cryptography
 
-We reuse the libsodium primitives we wrote and tested in `@spourgiti/crypto` during Plan 2. The package gains a dual `exports` map (Node entry keeps the existing `createRequire` shim; new browser entry uses native ESM `import sodium from 'libsodium-wrappers'`). The 18 Plan 2 tests stay valid; a new Vitest browser-mode run pins parity.
+We reuse the libsodium primitives we wrote and tested in `@liaskos/crypto` during Plan 2. The package gains a dual `exports` map (Node entry keeps the existing `createRequire` shim; new browser entry uses native ESM `import sodium from 'libsodium-wrappers'`). The 18 Plan 2 tests stay valid; a new Vitest browser-mode run pins parity.
 
 ### 4.1 Identity keys
 
@@ -427,7 +427,7 @@ In-memory only:
 
 1. `supabase.auth.signInWithPassword`.
 2. Client derives the Argon2id KEK from the password.
-3. Client decrypts `ciphertext_private_key` from IndexedDB. If IndexedDB has no key (new device), show: **"Your encryption keys live on the device where you signed up. Open Spourgiti Send there to read messages, or use your recovery code to set up a new device."** Below it: a "Use recovery code" affordance.
+3. Client decrypts `ciphertext_private_key` from IndexedDB. If IndexedDB has no key (new device), show: **"Your encryption keys live on the device where you signed up. Open File Exchange there to read messages, or use your recovery code to set up a new device."** Below it: a "Use recovery code" affordance.
 4. Recovery-code path: client downloads `recovery_blob` from `profiles`, derives the recovery KEK, decrypts the private key, re-encrypts under the password KEK, stores in this device's IndexedDB. Now the device is "registered."
 
 ### 6.3 Reset password (uses recovery code)
@@ -525,8 +525,8 @@ Every queue surface has explicitly-designed empty / loading / error states:
 
 ### 8.4 Onboarding (5 steps, first-time only)
 
-1. **Welcome:** "Spourgiti Send is end-to-end encrypted. Only you and the people you send to can read your files. Not even we can." [Continue]
-2. **Your address:** "This is your address: `@<username>`. Share it with anyone you want to receive from. It works like an email address but only with Spourgiti accounts." [Copy] [Continue]
+1. **Welcome:** "File Exchange is end-to-end encrypted. Only you and the people you send to can read your files. Not even we can." [Continue]
+2. **Your address:** "This is your address: `@<username>`. Share it with anyone you want to receive from. It works like an email address but only with File Exchange accounts." [Copy] [Continue]
 3. **Recovery code:** the recovery-code screen from §6.1. Mandatory checkbox before [Continue].
 4. **Empty inbox:** "Nothing here yet. **[Send a file]**" or [Skip for now]
 5. **First-send coachmark:** points at recipient field — "Type a username; we'll find them." Then dropzone — "Drop files or tap to pick." No mention of transport.
@@ -540,7 +540,7 @@ A `?` glyph in the corner opens a drawer with: the safety-number explanation, th
 - **Build:** Vite + React + TypeScript (carry over the toolchain).
 - **Routing:** React Router v6 — five routes (`/login`, `/signup`, `/inbox`, `/outbox`, `/send/:id?`). Route guards check the `(SESSION, CRYPTO)` state.
 - **State:** **`zustand`** (decision: zustand over nanostores, per Arch reviewer P2-2) for the small client state — `cryptoState`, current user profile, in-flight transfers.
-- **Crypto:** `@spourgiti/crypto` with **dual exports** in its `package.json` `exports` map:
+- **Crypto:** `@liaskos/crypto` with **dual exports** in its `package.json` `exports` map:
   ```jsonc
   "exports": {
     ".": {
@@ -551,9 +551,9 @@ A `?` glyph in the corner opens a drawer with: the safety-number explanation, th
   }
   ```
   All other primitive files (`keys.ts`, `sign.ts`, `seal.ts`, `stream.ts`, `random.ts`) are environment-neutral.
-- **Crypto pipeline (encrypt/decrypt/sign/verify) lives in `@spourgiti/transfer`** as pure functions (Arch P1-1). `apps/send` only orchestrates transports.
+- **Crypto pipeline (encrypt/decrypt/sign/verify) lives in `@liaskos/transfer`** as pure functions (Arch P1-1). `apps/send` only orchestrates transports.
 - **Local DB:** IndexedDB via `idb`, schema in `apps/send/src/idb/schema.ts` with versioning.
-- **Backend:** Supabase. One project: `spourgiti-send` (new, in `eu-north-1` org Liaskos). Migrations live in `supabase/migrations/*.sql`, applied via `supabase db push` from CI.
+- **Backend:** Supabase. One project: `file-exchange` (new, in `eu-north-1` org Liaskos). Migrations live in `supabase/migrations/*.sql`, applied via `supabase db push` from CI.
 - **Realtime:** `supabase-js` v2. `postgres_changes` for inbox notifications (server-side filter), `broadcast` for WebRTC signaling (gated by Realtime Authorization), `presence` for "is the other peer online".
 - **WebRTC:** **native `RTCPeerConnection`**, not `simple-peer` (decision: Arch reviewer's call — no dep, full control, signaling auth integrates cleaner with the signed manifest). ~200 lines, budgeted explicitly.
 - **Tooling:** Vitest with **browser mode enabled** (`@vitest/browser` + Playwright provider) for the crypto package's parity tests. Playwright for one E2E (two-user signup → send → receive) against `supabase start` in CI, not a hosted preview.
@@ -565,7 +565,7 @@ A `?` glyph in the corner opens a drawer with: the safety-number explanation, th
 The pivot lets us reuse most of the existing monorepo. The cutover commit drops Electron-era packages and apps and rewires the rest.
 
 ```
-spourgiti/
+file-exchange/
   apps/
     send/                       <-- formerly apps/renderer, now the web SPA
       src/
@@ -578,7 +578,7 @@ spourgiti/
           accessors/
         store/
           cryptoContext.ts      CryptoState discriminated union (locked|unlocking|unlocked)
-        crypto-glue/            thin wrapper around @spourgiti/crypto + @spourgiti/transfer for the SPA
+        crypto-glue/            thin wrapper around @liaskos/crypto + @liaskos/transfer for the SPA
       public/
       index.html
       vite.config.ts
@@ -612,8 +612,8 @@ A `desktop-archive` git tag is pushed before the cutover so the Electron-era cod
 
 ## 11. Build, deploy, "auto-update"
 
-- Push to `main` → GitHub Actions runs `pnpm install && pnpm typecheck && pnpm test` (incl. Vitest browser), runs the `supabase-client` integration tests against the live `spourgiti-send` project, on green Vercel deploys (preview per PR, production from `main`).
-- Migrations: `supabase db push` from CI against the `spourgiti-send` project. (Plan 3f wires this; Plan 3b applies migrations via the Supabase MCP and commits the SQL files to git.)
+- Push to `main` → GitHub Actions runs `pnpm install && pnpm typecheck && pnpm test` (incl. Vitest browser), runs the `supabase-client` integration tests against the live `file-exchange` project, on green Vercel deploys (preview per PR, production from `main`).
+- Migrations: `supabase db push` from CI against the `file-exchange` project. (Plan 3f wires this; Plan 3b applies migrations via the Supabase MCP and commits the SQL files to git.)
 - Auto-update is browser cache-busting on the new bundle hash. No installers, no signing, no updater package.
 - **SRI on the bundle entry chunk + a published bundle hash is v2 work** (documented in §3 as a known trust assumption: a compromised Vercel can push a malicious SPA).
 
@@ -676,8 +676,8 @@ Two Vercel-provided libraries get mounted in `apps/send` at production-build tim
 
 ## 13. Testing strategy
 
-- **Crypto package** (`@spourgiti/crypto`): keep the 18 Plan 2 tests; add a Vitest browser-mode run (Playwright provider, Chromium) that asserts byte-equality of every primitive with the Node tests.
-- **Transfer package** (`@spourgiti/transfer`): unit tests of envelope compose + verify with all the §4.4 verification steps as separate test cases (recipient-mismatch rejected, replayed nonce rejected, tampered wrapped_key rejected, tampered ciphertext rejected, missing TAG_FINAL rejected, plaintext-hash mismatch rejected, manifest signature from wrong sender rejected, fingerprint pin mismatch rejected).
+- **Crypto package** (`@liaskos/crypto`): keep the 18 Plan 2 tests; add a Vitest browser-mode run (Playwright provider, Chromium) that asserts byte-equality of every primitive with the Node tests.
+- **Transfer package** (`@liaskos/transfer`): unit tests of envelope compose + verify with all the §4.4 verification steps as separate test cases (recipient-mismatch rejected, replayed nonce rejected, tampered wrapped_key rejected, tampered ciphertext rejected, missing TAG_FINAL rejected, plaintext-hash mismatch rejected, manifest signature from wrong sender rejected, fingerprint pin mismatch rejected).
 - **Supabase backend**: drop pgTAP. Use `supabase-js` with the service-role client in Vitest against a local `supabase start` instance. Tests:
   - non-member SELECT on another user's send returns no rows
   - non-member cannot INSERT a `sends` row directly (only `commit_upload`)

@@ -6,11 +6,12 @@ import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
-const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+// Prefer the modern SUPABASE_SECRET_KEY; fall back to the legacy injection.
+const SECRET_KEY = Deno.env.get('SUPABASE_SECRET_KEY') ?? Deno.env.get('SUPABASE_SECRET_KEY_KEY')!;
 const STALE_MINUTES = 10;
 
 Deno.serve(async () => {
-  const sb = createClient(SUPABASE_URL, SERVICE_ROLE);
+  const sb = createClient(SUPABASE_URL, SECRET_KEY);
 
   const { data: orphans, error } = await sb.rpc('find_orphan_auth_users', { p_minutes: STALE_MINUTES });
   if (error) {

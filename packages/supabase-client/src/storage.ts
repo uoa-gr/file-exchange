@@ -1,9 +1,9 @@
-import type { SpourgitiClient } from './client.js';
+import type { FileExchangeClient } from './client.js';
 
 const BUCKET = 'send-payloads';
 
 export async function uploadCiphertext(
-  client: SpourgitiClient,
+  client: FileExchangeClient,
   senderId: string,
   sendId: string,
   body: Uint8Array,
@@ -17,7 +17,7 @@ export async function uploadCiphertext(
 }
 
 export async function downloadCiphertext(
-  client: SpourgitiClient,
+  client: FileExchangeClient,
   storageObject: string,
 ): Promise<Uint8Array> {
   const { data, error } = await client.storage.from(BUCKET).download(storageObject);

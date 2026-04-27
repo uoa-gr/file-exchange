@@ -21,18 +21,18 @@ importers:
         specifier: ^2.1.4
         version: 2.1.9(@types/node@20.19.39)(@vitest/browser@2.1.9)(msw@2.13.6(@types/node@20.19.39)(typescript@5.9.3))
 
-  apps/send:
+  apps/file-exchange:
     dependencies:
-      '@spourgiti/crypto':
+      '@liaskos/crypto':
         specifier: workspace:*
         version: link:../../packages/crypto
-      '@spourgiti/keystore':
+      '@liaskos/keystore':
         specifier: workspace:*
         version: link:../../packages/keystore
-      '@spourgiti/shared':
+      '@liaskos/shared':
         specifier: workspace:*
         version: link:../../packages/shared
-      '@spourgiti/transfer':
+      '@liaskos/transfer':
         specifier: workspace:*
         version: link:../../packages/transfer
       idb:
@@ -94,7 +94,7 @@ importers:
 
   packages/keystore:
     dependencies:
-      '@spourgiti/crypto':
+      '@liaskos/crypto':
         specifier: workspace:*
         version: link:../crypto
     devDependencies:
@@ -116,7 +116,7 @@ importers:
 
   packages/supabase-client:
     dependencies:
-      '@spourgiti/shared':
+      '@liaskos/shared':
         specifier: workspace:*
         version: link:../shared
       '@supabase/supabase-js':
@@ -135,10 +135,10 @@ importers:
 
   packages/transfer:
     dependencies:
-      '@spourgiti/crypto':
+      '@liaskos/crypto':
         specifier: workspace:*
         version: link:../crypto
-      '@spourgiti/shared':
+      '@liaskos/shared':
         specifier: workspace:*
         version: link:../shared
     devDependencies:
