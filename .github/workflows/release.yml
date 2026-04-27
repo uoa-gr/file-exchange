@@ -31,9 +31,9 @@ jobs:
       - name: Build & publish
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Code-signing secrets (optional). Empty = unsigned build.
-          WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
-          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
-          CSC_LINK: ${{ secrets.CSC_LINK }}
-          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          # Disable mac code-signing auto-discovery; we ship unsigned for now.
+          # When real certs land, add CSC_LINK / CSC_KEY_PASSWORD secrets and
+          # remove (or override) this line. Same idea on Windows side via
+          # WIN_CSC_LINK / WIN_CSC_KEY_PASSWORD.
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
         run: pnpm exec electron-builder --publish always

@@ -7,7 +7,8 @@ export function createMainWindow(): BrowserWindow {
     height: 720,
     show: false,
     webPreferences: {
-      preload: path.join(__dirname, '..', 'preload.js'),
+      // After esbuild bundling, main and preload both live at dist/ root.
+      preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
