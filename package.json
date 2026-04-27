@@ -1,6 +1,6 @@
 {
   "name": "spourgiti",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "productName": "Spourgiti",
   "description": "Local-first collaborative file-sync desktop app",
