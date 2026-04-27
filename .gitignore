@@ -21,3 +21,5 @@ apps/renderer/dist/
 release-builds/
 # Claude Code session-local config
 .claude/
+# Allow Electron app resources
+!apps/desktop/build/
