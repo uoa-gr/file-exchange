@@ -18,7 +18,9 @@ export function createMainWindow(): BrowserWindow {
     win.loadURL('http://localhost:5173');
     win.webContents.openDevTools({ mode: 'detach' });
   } else {
-    const rendererIndex = path.join(app.getAppPath(), 'renderer', 'index.html');
+    // In production, renderer is copied to extraResources/renderer/.
+    // app.getAppPath() returns the .asar root; resourcesPath is the parent that holds extraResources.
+    const rendererIndex = path.join(process.resourcesPath, 'renderer', 'index.html');
     win.loadFile(rendererIndex);
   }
 
