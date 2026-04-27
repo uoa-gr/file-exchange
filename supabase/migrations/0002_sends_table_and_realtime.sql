@@ -23,10 +23,11 @@ create index sends_expires_at               on public.sends (expires_at) where s
 
 alter table public.sends enable row level security;
 
--- Read: row visible to sender and recipient.
+-- Read: row visible to sender and recipient. auth.uid() wrapped in (select ...)
+-- so it's evaluated once per query (advisor 0003).
 create policy "sends_party_select" on public.sends
   for select to authenticated
-  using (sender_id = auth.uid() or recipient_id = auth.uid());
+  using (sender_id = (select auth.uid()) or recipient_id = (select auth.uid()));
 
 -- Direct INSERT denied; only commit_upload RPC (migration 0004) writes.
 -- Direct UPDATE/DELETE denied; only mark_delivered / revoke_send RPCs write.

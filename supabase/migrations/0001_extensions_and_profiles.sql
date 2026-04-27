@@ -31,24 +31,22 @@ create view public.profiles_public
 
 grant select on public.profiles_public to anon, authenticated;
 
--- RLS on profiles itself: each row owner-only for read + write.
+-- RLS on profiles itself.
+-- profiles_public_read makes the public columns world-readable via the view
+-- (typeahead + key wrapping). profiles_self_update lets only the row owner
+-- update their own row. INSERT is gated by the create_profile RPC.
+-- auth.uid() is wrapped in (select ...) so it's evaluated once per query
+-- rather than once per row (advisor 0003).
 alter table public.profiles enable row level security;
 
-create policy "profiles_self_select" on public.profiles
-  for select to authenticated
-  using (id = auth.uid());
-
-create policy "profiles_self_update" on public.profiles
-  for update to authenticated
-  using (id = auth.uid())
-  with check (id = auth.uid());
-
--- Public-read policy on the underlying table for the view's needs.
--- profiles_public selects id/username/display_name/ed25519_public_key/created_at,
--- which any authenticated user must be able to read for typeahead + key wrapping.
 create policy "profiles_public_read" on public.profiles
   for select to anon, authenticated
   using (true);
+
+create policy "profiles_self_update" on public.profiles
+  for update to authenticated
+  using (id = (select auth.uid()))
+  with check (id = (select auth.uid()));
 
 -- INSERT happens only via the create_profile RPC (Migration 0004), so no
 -- direct INSERT policy is granted to clients.

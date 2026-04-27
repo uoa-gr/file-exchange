@@ -24,6 +24,7 @@ create table public.pending_uploads (
   expires_at    timestamptz not null default (now() + interval '15 minutes')
 );
 create index pending_uploads_expires_at on public.pending_uploads (expires_at);
+create index pending_uploads_sender_id  on public.pending_uploads (sender_id);  -- FK covering index (advisor 0001)
 
 -- Deferred storage deletion queue. mark_delivered / revoke_send / expire_sends
 -- enqueue rows here; an Edge Function worker drains them.
