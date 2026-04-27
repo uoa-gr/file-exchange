@@ -1,7 +1,9 @@
-# SPOURGITI — Design Specification
+# SPOURGITI — Design Specification (SUPERSEDED)
+
+> **⚠ Status: Superseded as of 2026-04-28.** This spec described one Electron desktop app covering three features (project file sharing, messaging, secure exchange). The project has been split into three standalone web apps. The file-sharing scope is covered by [2026-04-27-spourgiti-send-design.md](2026-04-27-spourgiti-send-design.md). The other two scopes (messaging, project file sharing) will get their own specs when their plans begin. This document is retained as the historical record of the original cross-cutting design.
 
 **Date:** 2026-04-27
-**Status:** Draft for review
+**Status:** Superseded
 
 ## 1. Purpose & Philosophy
 
