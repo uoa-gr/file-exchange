@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      better-sqlite3:
+        specifier: ^11.5.0
+        version: 11.10.0
     devDependencies:
       '@electron/rebuild':
         specifier: ^3.7.0
