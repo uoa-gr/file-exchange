@@ -1,8 +1,17 @@
+import { Chapter, Note } from '../components/Chapter.js';
+
 export function Outbox() {
   return (
-    <section>
-      <h1 style={{ fontFamily: '"Cormorant Garamond", Garamond, serif', fontWeight: 600, fontSize: 32 }}>II. Outbox</h1>
-      <p style={{ color: '#5a5a5a' }}>Nothing sent yet. Real outbox lands in Plan 3d.</p>
-    </section>
+    <Chapter
+      roman="II"
+      title="Outbox."
+      subtitle="What you have written, kept here for the record."
+      marginalia={<Note>Composer arrives in Plan 3d.</Note>}
+    >
+      <p className="prose prose--lead dropcap">
+        Nothing dispatched yet. Each envelope you send will be listed here
+        with its addressee and its fate.
+      </p>
+    </Chapter>
   );
 }

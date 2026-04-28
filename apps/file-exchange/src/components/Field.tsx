@@ -3,65 +3,55 @@ import { type InputHTMLAttributes, useId } from 'react';
 interface FieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
+  /** Roman-numeral or letter index in the gutter (purely decorative). */
+  index?: string;
+  /** Use mono face — recovery codes, key fingerprints, etc. */
+  mono?: boolean;
 }
 
+const ROMAN = ['', 'i.', 'ii.', 'iii.', 'iv.', 'v.', 'vi.', 'vii.', 'viii.', 'ix.', 'x.'];
+
+let counter = 0;
+const nextRoman = () => {
+  counter = (counter % 10) + 1;
+  return ROMAN[counter];
+};
+
 /**
- * Persistent labels above the input. Bottom-border-only field.
- * Visible focus ring (2px accent) on :focus-visible. Error message
- * announced via aria-describedby + role="alert".
+ * Fill-in-the-blank register entry. Small-caps label, ink rule underneath
+ * an unboxed input, decorative roman numeral in the gutter. Focus thickens
+ * the rule and shifts it to accent — no jarring outline box.
  */
-export function Field({ label, error, id, style, ...rest }: FieldProps) {
+export function Field({
+  label,
+  error,
+  id,
+  index,
+  mono,
+  className = '',
+  ...rest
+}: FieldProps) {
   const auto = useId();
   const inputId = id ?? auto;
   const errId = error ? `${inputId}-err` : undefined;
+  const gutterMark = index ?? nextRoman();
   return (
-    <div style={{ marginBottom: '1.25rem' }}>
-      <label
-        htmlFor={inputId}
-        style={{
-          display: 'block',
-          fontFamily: 'inherit',
-          fontSize: 14,
-          color: '#5a5a5a',
-          marginBottom: 4,
-        }}
-      >
-        {label}
-      </label>
-      <input
-        id={inputId}
-        aria-invalid={Boolean(error)}
-        aria-describedby={errId}
-        style={{
-          width: '100%',
-          padding: '8px 0',
-          fontSize: 16,
-          minHeight: 44,
-          border: 'none',
-          borderBottom: `1px solid ${error ? '#b03a2e' : '#5a5a5a'}`,
-          background: 'transparent',
-          fontFamily: 'inherit',
-          color: '#1a1a1a',
-          outline: 'none',
-          ...style,
-        }}
-        onFocus={(e) => {
-          e.currentTarget.style.outline = '2px solid #b03a2e';
-          e.currentTarget.style.outlineOffset = '2px';
-        }}
-        onBlur={(e) => {
-          e.currentTarget.style.outline = 'none';
-        }}
-        {...rest}
-      />
+    <div
+      className={`field ${mono ? 'field--mono' : ''} ${error ? 'field--error' : ''} ${className}`}
+    >
+      <span className="field__index" aria-hidden="true">{gutterMark}</span>
+      <label htmlFor={inputId} className="field__label">{label}</label>
+      <span className="field__input-wrap">
+        <input
+          {...rest}
+          id={inputId}
+          className="field__input"
+          aria-invalid={Boolean(error)}
+          aria-describedby={errId}
+        />
+      </span>
       {error && (
-        <div
-          id={errId}
-          role="alert"
-          style={{ color: '#b03a2e', fontSize: 14, marginTop: 4, fontFamily: 'inherit' }}
-        >
-          {error}
-        </div>
+        <p id={errId} role="alert" className="field__error">{error}</p>
       )}
     </div>
   );

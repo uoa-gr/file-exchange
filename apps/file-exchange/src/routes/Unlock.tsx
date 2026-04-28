@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Page } from '../components/Page.js';
 import { Field } from '../components/Field.js';
 import { Button } from '../components/Button.js';
+import { Chapter, Note } from '../components/Chapter.js';
 import { IdbBrowserKeystore } from '@liaskos/keystore';
 import { unwrapWithPassword, hexToBytes } from '../auth/crypto-binding.js';
 import { getSupabaseClient } from '@liaskos/supabase-client';
@@ -27,7 +28,6 @@ export function Unlock() {
       }
       const sk = await unwrapWithPassword(password, stored);
 
-      // Pull the public key from profiles_public for trust-on-first-use later.
       const sb = getSupabaseClient();
       const { data: u } = await sb.auth.getUser();
       const userId = u.user?.id;
@@ -54,36 +54,43 @@ export function Unlock() {
 
   return (
     <Page>
-      <h1 style={{ fontFamily: '"Cormorant Garamond", Garamond, serif', fontWeight: 600, fontSize: 32 }}>
-        Unlock
-      </h1>
-      <p style={{ color: '#5a5a5a' }}>
-        Enter your password to read your messages on this device.
-      </p>
-      <form onSubmit={onSubmit} noValidate>
-        <Field
-          label="Password"
-          type="password"
-          autoComplete="current-password"
-          required
-          autoFocus
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          error={error || undefined}
-        />
-        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem' }}>
-          <Button type="submit" variant="primary" disabled={pending}>
-            {pending ? 'Unlocking…' : 'Unlock'}
-          </Button>
-          <button
-            type="button"
-            onClick={async () => { await signOut(); }}
-            style={{ background: 'none', border: 'none', color: '#5a5a5a', cursor: 'pointer', font: 'inherit', minHeight: 44 }}
-          >
-            Sign out
-          </button>
-        </div>
-      </form>
+      <Chapter
+        roman="Interleaf"
+        title="Lift the cover."
+        subtitle="Your keys remain on this machine; the password unbinds them."
+        marginalia={
+          <Note>
+            Your encrypted key never leaves this device. The password
+            decrypts it locally; nothing is sent to verify it.
+          </Note>
+        }
+      >
+        <form onSubmit={onSubmit} noValidate>
+          <Field
+            label="Password"
+            type="password"
+            autoComplete="current-password"
+            required
+            autoFocus
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            error={error || undefined}
+            index="i."
+          />
+          <div className="actions">
+            <Button type="submit" variant="press" disabled={pending}>
+              {pending ? 'Opening…' : 'Open'}
+            </Button>
+            <button
+              type="button"
+              className="btn btn--ghost"
+              onClick={async () => { await signOut(); }}
+            >
+              Sign out instead
+            </button>
+          </div>
+        </form>
+      </Chapter>
     </Page>
   );
 }

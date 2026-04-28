@@ -1,8 +1,17 @@
+import { Chapter, Note } from '../components/Chapter.js';
+
 export function Inbox() {
   return (
-    <section>
-      <h1 style={{ fontFamily: '"Cormorant Garamond", Garamond, serif', fontWeight: 600, fontSize: 32 }}>I. Inbox</h1>
-      <p style={{ color: '#5a5a5a' }}>Nothing here yet. The real inbox lands in Plan 3d.</p>
-    </section>
+    <Chapter
+      roman="I"
+      title="Inbox."
+      subtitle="Letters delivered, awaiting your hand."
+      marginalia={<Note>The real inbox lands in Plan 3d. For now the binding is set; the pages are blank.</Note>}
+    >
+      <p className="prose prose--lead dropcap">
+        Nothing has arrived yet. Envelopes addressed to you will appear here,
+        decrypted only on this device — never on the way.
+      </p>
+    </Chapter>
   );
 }

@@ -1,8 +1,18 @@
+import { Chapter, Note } from '../components/Chapter.js';
+
 export function Send() {
   return (
-    <section>
-      <h1 style={{ fontFamily: '"Cormorant Garamond", Garamond, serif', fontWeight: 600, fontSize: 32 }}>III. Send</h1>
-      <p style={{ color: '#5a5a5a' }}>Composer lands in Plan 3d.</p>
-    </section>
+    <Chapter
+      roman="III"
+      title="Send."
+      subtitle="Address an envelope. Choose its contents. Seal."
+      marginalia={<Note>The composer is the next leaf to be set. Plan 3d.</Note>}
+    >
+      <p className="prose prose--lead dropcap">
+        The composer is not yet bound. When it lands you will write to a
+        named correspondent, attach a file, and the envelope will travel
+        sealed.
+      </p>
+    </Chapter>
   );
 }

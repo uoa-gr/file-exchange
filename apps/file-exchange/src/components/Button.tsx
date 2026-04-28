@@ -1,28 +1,18 @@
 import { type ButtonHTMLAttributes } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'plain';
+  /** press = primary cartouche; mark = small-caps under-rule; ghost = italic link */
+  variant?: 'press' | 'mark' | 'ghost';
 }
 
-export function Button({ variant = 'plain', children, style, ...rest }: ButtonProps) {
-  const accent = variant === 'primary';
+export function Button({
+  variant = 'press',
+  className = '',
+  children,
+  ...rest
+}: ButtonProps) {
   return (
-    <button
-      {...rest}
-      style={{
-        background: 'transparent',
-        border: 'none',
-        padding: '6px 0',
-        borderBottom: accent ? '2px solid #b03a2e' : '1px solid transparent',
-        font: 'inherit',
-        fontSize: 16,
-        color: '#1a1a1a',
-        cursor: rest.disabled ? 'not-allowed' : 'pointer',
-        opacity: rest.disabled ? 0.5 : 1,
-        minHeight: 44,
-        ...style,
-      }}
-    >
+    <button {...rest} className={`btn btn--${variant} ${className}`}>
       {children}
     </button>
   );

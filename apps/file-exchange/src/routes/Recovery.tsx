@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Page } from '../components/Page.js';
 import { Field } from '../components/Field.js';
 import { Button } from '../components/Button.js';
+import { Chapter, Note } from '../components/Chapter.js';
 import { resetWithRecoveryCode } from '../auth/api.js';
 import { useCryptoStore } from '../store/cryptoContext.js';
 
@@ -37,38 +38,54 @@ export function Recovery() {
 
   return (
     <Page>
-      <h1 style={{ fontFamily: '"Cormorant Garamond", Garamond, serif', fontWeight: 600, fontSize: 32 }}>
-        Use recovery code
-      </h1>
-      <p style={{ color: '#1a1a1a' }}>
-        Enter the 24-byte recovery code you saved when you created your account, plus a new password. Spaces and middle-dots are ignored.
-      </p>
-      <form onSubmit={onSubmit} noValidate>
-        <Field
-          label="Recovery code"
-          required
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          style={{ fontFamily: '"JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace' }}
-          autoComplete="off"
-          spellCheck={false}
-        />
-        <Field
-          label="New password"
-          type="password"
-          autoComplete="new-password"
-          required
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          error={error || undefined}
-        />
-        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem' }}>
-          <Button type="submit" variant="primary" disabled={pending}>
-            {pending ? 'Resetting…' : 'Reset password'}
-          </Button>
-          <Link to="/login" style={{ color: '#5a5a5a' }}>Back to sign-in</Link>
-        </div>
-      </form>
+      <Chapter
+        roman="Restoration"
+        title="Open by recovery."
+        subtitle="The 24-byte code you copied at registration; spaces are forgiven."
+        marginalia={
+          <>
+            <Note>
+              The recovery code is the only key that can re-bind your
+              account to a new device. It is irreplaceable.
+            </Note>
+            <Note>
+              We cannot reset it. If lost, the messages remain encrypted
+              and unreadable — by you and by us alike.
+            </Note>
+          </>
+        }
+      >
+        <form onSubmit={onSubmit} noValidate>
+          <Field
+            label="Recovery code"
+            required
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            mono
+            autoComplete="off"
+            spellCheck={false}
+            placeholder="abcd ef01 2345 ··· "
+            index="i."
+          />
+          <Field
+            label="New password"
+            type="password"
+            autoComplete="new-password"
+            required
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            error={error || undefined}
+            placeholder="at least twelve characters"
+            index="ii."
+          />
+          <div className="actions">
+            <Button type="submit" variant="press" disabled={pending}>
+              {pending ? 'Restoring…' : 'Restore'}
+            </Button>
+            <Link to="/login" className="btn btn--ghost">Back to sign-in</Link>
+          </div>
+        </form>
+      </Chapter>
     </Page>
   );
 }
