@@ -1,24 +1,25 @@
 import type { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
 
 /**
- * Mobile-first auth page wrapper. Renders a small wordmark, then the
- * route's title + body in a tight centered column. Use <PageTitle> and
- * <PageHelper> inside it.
+ * Mobile-first auth page wrapper. Top: lunar-painting backdrop with
+ * "File Exchange" italic hero spanning full viewport width. Bottom:
+ * cream-faded compact card holding the route's title + form.
  */
 export function Page({ children }: { children: ReactNode }) {
   return (
     <div className="page">
-      <div className="page__inner">
-        <Link to="/login" className="brand">File Exchange</Link>
-        {children}
-      </div>
+      <header className="page__hero">
+        <h1 className="hero">File Exchange</h1>
+        <p className="tagline">End-to-end encrypted file transfer</p>
+      </header>
+      <div className="page__card">{children}</div>
     </div>
   );
 }
 
+/** Sub-heading inside the card (e.g. "Sign in", "Create account"). */
 export function PageTitle({ children }: { children: ReactNode }) {
-  return <h1 className="title">{children}</h1>;
+  return <h2 className="title">{children}</h2>;
 }
 
 export function PageHelper({ children }: { children: ReactNode }) {
