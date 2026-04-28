@@ -42,44 +42,44 @@ body {
 
 .page {
   position: relative;
-  min-height: 100dvh;
+  height: 100dvh;
+  overflow: hidden;                     /* never scroll */
   display: flex;
   flex-direction: column;
   padding: 0;
-  background-color: #0c1020;            /* matches the image's deep sky */
+  background: #0c1020 url('/bg.png') center/cover no-repeat;
 }
 
-/* Background image pinned to the viewport so it doesn't stretch with
-   tall scrollable content; the gradient overlay below is fixed too. */
-.page::after {
+/* Subtle horizontal vignette — the image stays vivid everywhere; only
+   the edges darken slightly so the cream hero and form panel breathe. */
+.page::before {
   content: "";
-  position: fixed;
+  position: absolute;
   inset: 0;
-  background-image: url('/bg.png');
-  background-size: cover;
-  background-position: center top;
-  background-repeat: no-repeat;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.30) 0%,
+    rgba(0, 0, 0, 0.05) 40%,
+    rgba(0, 0, 0, 0.05) 60%,
+    rgba(0, 0, 0, 0.25) 100%
+  );
   pointer-events: none;
   z-index: 0;
 }
 
-/* Vertical gradient overlay: dark wash under the hero text → transparent
-   middle so the painting shows → fades into cream paper for the form. */
-.page::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(8, 11, 22, 0.55) 0%,
-    rgba(8, 11, 22, 0.20) 18%,
-    rgba(246, 241, 231, 0.00) 30%,
-    rgba(246, 241, 231, 0.95) 46%,
-    var(--paper) 58%,
-    var(--paper) 100%
-  );
-  pointer-events: none;
-  z-index: 1;
+/* On desktop the gradient becomes directional — image on the left half,
+   cream wash sliding in from the right where the form panel sits. */
+@media (min-width: 720px) {
+  .page::before {
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.20) 0%,
+      rgba(0, 0, 0, 0.00) 30%,
+      rgba(246, 241, 231, 0.0) 50%,
+      rgba(246, 241, 231, 0.50) 75%,
+      rgba(246, 241, 231, 0.85) 100%
+    );
+  }
 }
 
 /* ---------- Hero brand (the spotlight) ------------------------------ */
@@ -88,46 +88,54 @@ body {
   position: relative;
   z-index: 2;
   width: 100%;
-  padding: clamp(3rem, 8vh, 5rem) 1.25rem 0;
+  padding: clamp(2rem, 6vh, 3.5rem) 1.25rem 0;
 }
 
 .hero {
   font-family: var(--serif-display);
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(3.4rem, 13vw, 6.5rem);
+  font-size: clamp(2.8rem, 11vw, 5.5rem);
   line-height: 0.95;
   letter-spacing: -0.018em;
   color: var(--paper);
   text-align: center;
   margin: 0;
-  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
 }
 
 .tagline {
   font-family: var(--serif-display);
   font-style: italic;
   font-weight: 400;
-  font-size: 1.1rem;
+  font-size: 1rem;
   letter-spacing: 0.01em;
-  color: rgba(246, 241, 231, 0.85);
+  color: rgba(246, 241, 231, 0.88);
   text-align: center;
-  margin: 0.6rem 0 0;
-  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.55);
+  margin: 0.45rem 0 0;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.65);
 }
 
-/* Compact form card — narrow column, pushed into the cream zone. */
+/* Compact form panel — translucent cream card, floats over the image.
+   Mobile: anchored bottom-center. Desktop: anchored to the right side. */
 .page__card {
   position: relative;
   z-index: 2;
-  width: 100%;
-  max-width: 26rem;
-  margin: clamp(10rem, 32vh, 18rem) auto 3rem;
-  padding: 0 1.25rem;
+  margin: auto auto max(1.25rem, env(safe-area-inset-bottom));
+  width: calc(100% - 2rem);
+  max-width: 22rem;
+  padding: 1.25rem 1.25rem 1.5rem;
+  background: rgba(246, 241, 231, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
 }
 
 @media (min-width: 720px) {
-  .page__card { max-width: 30rem; padding: 0 2rem; }
+  .page__card {
+    margin: auto 4vw auto auto;       /* right-anchored */
+    max-width: 24rem;
+    padding: 1.75rem 1.75rem 1.85rem;
+  }
 }
 
 /* ---------- Title + helper ------------------------------------------ */
