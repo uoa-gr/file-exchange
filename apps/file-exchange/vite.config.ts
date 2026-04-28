@@ -11,7 +11,7 @@ const base = process.env.PAGES_BASE_URL ?? '/';
 
 // libsodium-wrappers-sumo v0.7.x ESM entry imports './libsodium-sumo.mjs'
 // as a sibling, but that file lives in the *separate* libsodium-sumo
-// package's dist directory. Rewrite the relative import at resolve time.
+// package's dist directory. Rewrite the relative import.
 const sumoSiblingMjs = fileURLToPath(
   new URL(
     '../../node_modules/libsodium-sumo/dist/modules-sumo-esm/libsodium-sumo.mjs',
@@ -19,9 +19,23 @@ const sumoSiblingMjs = fileURLToPath(
   ),
 );
 
-function fixLibsodiumEsm(): Plugin {
+// Esbuild plugin (used by Vite's dev pre-bundler).
+const esbuildSumoFix = {
+  name: 'fix-libsodium-esm-esbuild',
+  setup(build: { onResolve: (opts: { filter: RegExp }, cb: (args: { importer: string }) => { path: string } | undefined) => void }) {
+    build.onResolve({ filter: /^\.\/libsodium-sumo\.mjs$/ }, (args) => {
+      if (args.importer.includes('libsodium-wrappers-sumo')) {
+        return { path: sumoSiblingMjs };
+      }
+      return undefined;
+    });
+  },
+};
+
+// Rollup plugin (used by Vite's production build).
+function rollupSumoFix(): Plugin {
   return {
-    name: 'fix-libsodium-esm',
+    name: 'fix-libsodium-esm-rollup',
     enforce: 'pre',
     resolveId(source, importer) {
       if (
@@ -37,11 +51,15 @@ function fixLibsodiumEsm(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [fixLibsodiumEsm(), react()],
+  plugins: [rollupSumoFix(), react()],
   base,
   build: { outDir: 'dist', emptyOutDir: true, target: 'es2022' },
   server: { port: 5173, strictPort: true },
   optimizeDeps: {
     include: ['libsodium-wrappers-sumo'],
+    esbuildOptions: {
+      target: 'es2022',
+      plugins: [esbuildSumoFix],
+    },
   },
 });
