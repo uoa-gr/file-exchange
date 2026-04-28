@@ -1,18 +1,18 @@
 import { type ButtonHTMLAttributes } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  /** press = primary cartouche; mark = small-caps under-rule; ghost = italic link */
-  variant?: 'press' | 'mark' | 'ghost';
+  variant?: 'solid' | 'ghost';
 }
 
 export function Button({
-  variant = 'press',
+  variant = 'solid',
   className = '',
   children,
   ...rest
 }: ButtonProps) {
+  const v = variant === 'ghost' ? 'btn btn--ghost' : 'btn';
   return (
-    <button {...rest} className={`btn btn--${variant} ${className}`}>
+    <button {...rest} className={`${v} ${className}`.trim()}>
       {children}
     </button>
   );

@@ -1,9 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Page } from '../components/Page.js';
+import { Page, PageTitle, PageHelper } from '../components/Page.js';
 import { Field } from '../components/Field.js';
 import { Button } from '../components/Button.js';
-import { Chapter, Note } from '../components/Chapter.js';
 import { signInPassword } from '../auth/api.js';
 import { useCryptoStore } from '../store/cryptoContext.js';
 
@@ -29,7 +28,7 @@ export function Login() {
           break;
         case 'no_keys_on_device':
           setNeedsRecovery(true);
-          setError('Your encryption keys live on the device where you signed up. Use your recovery code to set up this one.');
+          setError('Your keys live on the device where you signed up. Use your recovery code to set up this one.');
           break;
         case 'auth_error':
           setError(r.message);
@@ -47,53 +46,34 @@ export function Login() {
 
   return (
     <Page>
-      <Chapter
-        roman="Frontispiece"
-        title="Sign in."
-        subtitle="Re-open your correspondence."
-        marginalia={
-          <>
-            <Note>
-              File Exchange does not hold your messages in plain. Without your
-              password the server stores nothing it can read.
-            </Note>
-            <Note>
-              First time on this machine? Use your recovery code instead.
-            </Note>
-          </>
-        }
-      >
-        <form onSubmit={onSubmit} noValidate>
-          <Field
-            label="Email"
-            type="email"
-            autoComplete="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            index="i."
-          />
-          <Field
-            label="Password"
-            type="password"
-            autoComplete="current-password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            error={error || undefined}
-            index="ii."
-          />
-          <div className="actions">
-            <Button type="submit" variant="press" disabled={pending}>
-              {pending ? 'Signing in…' : 'Sign in'}
-            </Button>
-            <Link to="/signup" className="btn btn--ghost">Open a new account</Link>
-            {needsRecovery && (
-              <Link to="/recovery" className="btn btn--ghost">Use recovery code</Link>
-            )}
-          </div>
-        </form>
-      </Chapter>
+      <PageTitle>Sign in</PageTitle>
+      <PageHelper>End-to-end encrypted. Your password decrypts your keys on this device.</PageHelper>
+      <form onSubmit={onSubmit} className="form" noValidate>
+        <Field
+          label="Email"
+          type="email"
+          autoComplete="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Field
+          label="Password"
+          type="password"
+          autoComplete="current-password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          error={error || undefined}
+        />
+        <Button type="submit" disabled={pending}>
+          {pending ? 'Signing in…' : 'Sign in'}
+        </Button>
+      </form>
+      <p className="linkrow">
+        New here?<Link to="/signup">Create an account</Link>
+        {needsRecovery && <Link to="/recovery">Use recovery code</Link>}
+      </p>
     </Page>
   );
 }

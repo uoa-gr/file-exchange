@@ -1,8 +1,7 @@
 import { useState, type FormEvent } from 'react';
-import { Page } from '../components/Page.js';
+import { Page, PageTitle, PageHelper } from '../components/Page.js';
 import { Field } from '../components/Field.js';
 import { Button } from '../components/Button.js';
-import { Chapter, Note } from '../components/Chapter.js';
 import { IdbBrowserKeystore } from '@liaskos/keystore';
 import { unwrapWithPassword, hexToBytes } from '../auth/crypto-binding.js';
 import { getSupabaseClient } from '@liaskos/supabase-client';
@@ -23,7 +22,7 @@ export function Unlock() {
     try {
       const stored = await keystore.loadEncryptedKey();
       if (!stored) {
-        setError('No encryption keys on this device. Sign out and use recovery code.');
+        setError('No keys on this device. Sign out and use your recovery code.');
         return;
       }
       const sk = await unwrapWithPassword(password, stored);
@@ -54,43 +53,32 @@ export function Unlock() {
 
   return (
     <Page>
-      <Chapter
-        roman="Interleaf"
-        title="Lift the cover."
-        subtitle="Your keys remain on this machine; the password unbinds them."
-        marginalia={
-          <Note>
-            Your encrypted key never leaves this device. The password
-            decrypts it locally; nothing is sent to verify it.
-          </Note>
-        }
-      >
-        <form onSubmit={onSubmit} noValidate>
-          <Field
-            label="Password"
-            type="password"
-            autoComplete="current-password"
-            required
-            autoFocus
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            error={error || undefined}
-            index="i."
-          />
-          <div className="actions">
-            <Button type="submit" variant="press" disabled={pending}>
-              {pending ? 'Opening…' : 'Open'}
-            </Button>
-            <button
-              type="button"
-              className="btn btn--ghost"
-              onClick={async () => { await signOut(); }}
-            >
-              Sign out instead
-            </button>
-          </div>
-        </form>
-      </Chapter>
+      <PageTitle>Unlock</PageTitle>
+      <PageHelper>Enter your password to read your messages on this device.</PageHelper>
+      <form onSubmit={onSubmit} className="form" noValidate>
+        <Field
+          label="Password"
+          type="password"
+          autoComplete="current-password"
+          required
+          autoFocus
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          error={error || undefined}
+        />
+        <Button type="submit" disabled={pending}>
+          {pending ? 'Unlocking…' : 'Unlock'}
+        </Button>
+      </form>
+      <p className="linkrow">
+        <button
+          type="button"
+          onClick={async () => { await signOut(); }}
+          style={{ background: 'none', border: 0, color: 'inherit', font: 'inherit', cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: '0.2em' }}
+        >
+          Sign out
+        </button>
+      </p>
     </Page>
   );
 }

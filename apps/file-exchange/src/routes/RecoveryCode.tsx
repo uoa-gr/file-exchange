@@ -1,8 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { Page } from '../components/Page.js';
+import { Page, PageTitle, PageHelper } from '../components/Page.js';
 import { Button } from '../components/Button.js';
-import { Chapter, Note } from '../components/Chapter.js';
 import { formatRecoveryCode } from '../auth/crypto-binding.js';
 
 interface State { recoveryCodeHex?: string }
@@ -30,64 +29,39 @@ export function RecoveryCode() {
 
   return (
     <Page>
-      <Chapter
-        roman="Colophon"
-        title="Your recovery code."
-        subtitle="Inscribe it somewhere only you can reach. We keep no copy."
-        marginalia={
-          <>
-            <Note>
-              This is the single key that re-binds your account to a new
-              device — irreplaceable, and never shown again.
-            </Note>
-            <Note>
-              A printed page in a drawer is, by some measures, safer than
-              any cloud.
-            </Note>
-          </>
-        }
+      <PageTitle>Save your recovery code</PageTitle>
+      <PageHelper>
+        This is the only way to recover your account if you forget your password. We can’t reset it for you.
+      </PageHelper>
+
+      <div
+        className="code-box"
+        role="textbox"
+        aria-readonly="true"
+        aria-label="Recovery code"
       >
-        <p className="prose prose--lead dropcap">
-          What follows is the only string of characters that can recover this
-          account on another machine. Write it down, or store it in a password
-          manager. <strong>If you lose it, no-one can read your messages — not
-          even us.</strong>
-        </p>
+        {formatRecoveryCode(code)}
+      </div>
 
-        <div className="codex" data-label="Recovery code">
-          <div
-            className="codex__code"
-            role="textbox"
-            aria-readonly="true"
-            aria-label="Recovery code"
-          >
-            {formatRecoveryCode(code)}
-          </div>
-        </div>
+      <Button onClick={copy} variant="ghost">
+        {copied ? 'Copied' : 'Copy to clipboard'}
+      </Button>
 
-        <div className="actions" style={{ marginTop: '1.25rem' }}>
-          <Button onClick={copy} variant="mark">{copied ? 'Copied' : 'Copy to clipboard'}</Button>
-        </div>
+      <label className="check">
+        <input
+          type="checkbox"
+          checked={acked}
+          onChange={(e) => setAcked(e.target.checked)}
+        />
+        <span>I’ve saved my recovery code somewhere safe.</span>
+      </label>
 
-        <label className="check">
-          <input
-            type="checkbox"
-            checked={acked}
-            onChange={(e) => setAcked(e.target.checked)}
-          />
-          <span>I have saved my recovery code in a place only I can reach.</span>
-        </label>
-
-        <div className="actions">
-          <Button
-            variant="press"
-            disabled={!acked}
-            onClick={() => navigate('/inbox', { replace: true })}
-          >
-            Continue to inbox
-          </Button>
-        </div>
-      </Chapter>
+      <Button
+        disabled={!acked}
+        onClick={() => navigate('/inbox', { replace: true })}
+      >
+        Continue
+      </Button>
     </Page>
   );
 }

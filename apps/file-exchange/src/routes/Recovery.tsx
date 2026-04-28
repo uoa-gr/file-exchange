@@ -1,9 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Page } from '../components/Page.js';
+import { Page, PageTitle, PageHelper } from '../components/Page.js';
 import { Field } from '../components/Field.js';
 import { Button } from '../components/Button.js';
-import { Chapter, Note } from '../components/Chapter.js';
 import { resetWithRecoveryCode } from '../auth/api.js';
 import { useCryptoStore } from '../store/cryptoContext.js';
 
@@ -38,54 +37,36 @@ export function Recovery() {
 
   return (
     <Page>
-      <Chapter
-        roman="Restoration"
-        title="Open by recovery."
-        subtitle="The 24-byte code you copied at registration; spaces are forgiven."
-        marginalia={
-          <>
-            <Note>
-              The recovery code is the only key that can re-bind your
-              account to a new device. It is irreplaceable.
-            </Note>
-            <Note>
-              We cannot reset it. If lost, the messages remain encrypted
-              and unreadable — by you and by us alike.
-            </Note>
-          </>
-        }
-      >
-        <form onSubmit={onSubmit} noValidate>
-          <Field
-            label="Recovery code"
-            required
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            mono
-            autoComplete="off"
-            spellCheck={false}
-            placeholder="abcd ef01 2345 ··· "
-            index="i."
-          />
-          <Field
-            label="New password"
-            type="password"
-            autoComplete="new-password"
-            required
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            error={error || undefined}
-            placeholder="at least twelve characters"
-            index="ii."
-          />
-          <div className="actions">
-            <Button type="submit" variant="press" disabled={pending}>
-              {pending ? 'Restoring…' : 'Restore'}
-            </Button>
-            <Link to="/login" className="btn btn--ghost">Back to sign-in</Link>
-          </div>
-        </form>
-      </Chapter>
+      <PageTitle>Recover account</PageTitle>
+      <PageHelper>Enter your recovery code and a new password. Spaces are ignored.</PageHelper>
+      <form onSubmit={onSubmit} className="form" noValidate>
+        <Field
+          label="Recovery code"
+          required
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          mono
+          autoComplete="off"
+          spellCheck={false}
+          placeholder="abcd ef01 2345…"
+        />
+        <Field
+          label="New password"
+          type="password"
+          autoComplete="new-password"
+          required
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          error={error || undefined}
+          hint="At least 12 characters."
+        />
+        <Button type="submit" disabled={pending}>
+          {pending ? 'Resetting…' : 'Reset password'}
+        </Button>
+      </form>
+      <p className="linkrow">
+        <Link to="/login">Back to sign in</Link>
+      </p>
     </Page>
   );
 }
